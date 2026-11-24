@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ethiopian IT Job Finder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Source+Sans+3:wght@400;600&family=Noto+Sans+Ethiopic:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f2f5f1;--panel:#fff;--ink:#14231d;--muted:#5d6f66;--line:#d9e1db;--deep:#0d3b2c;--deep2:#175240;--gold:#f2b705;--red:#c8382b;--focus:#1a6bff;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0c1511;--panel:#14211b;--ink:#e8efea;--muted:#93a69b;--line:#26382f;--deep:#06241a;--deep2:#0f3a2b;color-scheme:dark}}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:17px/1.55 "Source Sans 3","Noto Sans Ethiopic",system-ui,sans-serif}
+h1,h2,.date,button,.chip{font-family:"Bricolage Grotesque","Noto Sans Ethiopic","Source Sans 3",sans-serif}
+header{background:linear-gradient(180deg,var(--deep),var(--deep2));color:#fff;padding:56px 20px 64px;position:relative}
+header::after{content:"";position:absolute;left:0;right:0;bottom:0;height:6px;background:linear-gradient(90deg,#078930 0 33.3%,var(--gold) 33.3% 66.6%,#da121a 66.6%)}
+.wrap{max-width:900px;margin:0 auto}
+h1{font-size:clamp(2rem,6vw,3.4rem);line-height:1.05;margin:0 0 10px;font-weight:800;letter-spacing:-.02em}
+header p{margin:0 0 28px;color:#c4d9cf;max-width:52ch}
+.only{display:block;margin-top:14px;color:#c4d9cf;font-size:.95rem}.only input{margin-right:8px;accent-color:var(--gold)}
+#f{display:flex;gap:10px;background:var(--panel);padding:8px;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+input[type=search]{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:inherit;font-size:1.1rem;padding:12px 14px;outline:0}
+button{cursor:pointer;border:0;border-radius:10px;font-weight:700;font-size:1rem}
+.go{background:var(--gold);color:#241a00;padding:0 26px}
+.go:hover{filter:brightness(1.07)}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+main{padding:28px 20px 70px}
+.bar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:18px;color:var(--muted)}
+.bar strong{color:var(--ink)}
+select{font:inherit;padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--ink);max-width:100%}
+.filters{display:flex;gap:8px;flex-wrap:wrap}
+ul.jobs{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.job{display:grid;grid-template-columns:96px 1fr;background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.date{padding:16px 10px;text-align:center;background:color-mix(in srgb,var(--deep) 8%,var(--panel));border-right:1px solid var(--line);font-weight:700;line-height:1.2;display:flex;flex-direction:column;justify-content:center}
+.date small{display:block;font-weight:500;color:var(--muted);font-size:.78rem;margin-top:4px}
+.date.fresh{background:var(--gold);color:#241a00;border-right-color:transparent}
+.date.fresh small{color:#4a3800}
+.body{padding:16px 20px}
+.job h2{font-size:1.15rem;margin:0 0 4px;line-height:1.3}
+.job h2 a{color:inherit;text-decoration:none}
+.job h2 a:hover{text-decoration:underline;text-decoration-color:var(--gold);text-underline-offset:3px;text-decoration-thickness:2px}
+.src{color:var(--deep2);font-weight:600;font-size:.9rem}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]) .src{color:#7fd1a8}}
+.job p{margin:6px 0 0;color:var(--muted);font-size:.95rem;max-width:70ch}
+.pager{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:28px}
+.pager button{min-width:42px;height:42px;padding:0 12px;background:var(--panel);color:var(--ink);border:1px solid var(--line)}
+.pager button[aria-current=page]{background:var(--deep);color:#fff;border-color:var(--deep)}
+.pager button:disabled{opacity:.4;cursor:default}
+.jump{display:flex;gap:8px;justify-content:center;align-items:center;margin-top:14px;color:var(--muted)}.jump input{width:90px;font:inherit;padding:8px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--ink)}.jump button{height:38px;padding:0 16px;background:var(--deep);color:#fff}
+.note{display:flex;align-items:center;gap:12px;background:color-mix(in srgb,var(--gold) 22%,var(--panel));border:1px solid var(--gold);border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:.95rem}.spin.sm{width:16px;height:16px;border-width:2px;margin:0;flex:none}
+.upd{margin-top:24px;color:var(--muted);font-size:.9rem;text-align:center}
+.msg{background:var(--panel);border:1px dashed var(--line);border-radius:12px;padding:28px;text-align:center;color:var(--muted)}
+.msg.err{border-color:var(--red);color:var(--red)}
+.also{margin-top:34px;padding-top:20px;border-top:1px solid var(--line)}
+.also h3{margin:0 0 10px;font-size:1rem}
+.chip{display:inline-block;margin:0 8px 8px 0;padding:8px 14px;border:1px solid var(--line);border-radius:999px;background:var(--panel);color:var(--ink);text-decoration:none;font-weight:600;font-size:.92rem}
+.chip:hover{border-color:var(--deep2)}
+.spin{width:26px;height:26px;border:3px solid var(--line);border-top-color:var(--deep2);border-radius:50%;margin:0 auto 12px;animation:r .8s linear infinite}
+@keyframes r{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.spin{animation-duration:3s}}
+@media (max-width:560px){.job{grid-template-columns:1fr}.date{flex-direction:row;gap:8px;justify-content:flex-start;padding:8px 16px;border-right:0;border-bottom:1px solid var(--line)}.date small{display:inline;margin:0}#f{flex-direction:column}.go{padding:12px}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <h1>Every IT and computing job in Ethiopia, newest first</h1>
+  <p>Jobs from dozens of Ethiopian and international job sites, in English and Amharic, from the last 3 months. Results appear as you type. Leave the box empty to browse all computing jobs.</p>
+  <form id="f" role="search" autocomplete="off">
+    <input type="search" id="q" placeholder="Type to search: developer, network, ሶፍትዌር, UNICEF" aria-label="Search jobs" autofocus>
+    <button class="go" type="submit">Search</button>
+  </form>
+  <label class="only"><input type="checkbox" id="itOnly" checked> Only IT and computing jobs when the box is empty</label>
+</div></header>
+
+<main><div class="wrap" id="out" aria-live="polite">
+  <div class="msg"><div class="spin"></div>Loading the job list...</div>
+</div></main>
+
+<script>
+const PER = 20, DAY = 864e5, MAX_DAYS = 90;
+const $ = id => document.getElementById(id), out = $("out");
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fmt = n => n.toLocaleString();
+// Sites that block scraping, plus Facebook (no public search): open their own search.
+const EXT = {
+  "LinkedIn": (q) => `https://www.linkedin.com/jobs/search/?keywords=${q}&location=Ethiopia`,
+  "Indeed": (q) => `https://www.indeed.com/jobs?q=${q}&l=Ethiopia`,
+  "Glassdoor": (q) => `https://www.glassdoor.com/Job/jobs.htm?sc.keyword=${q}`,
+  "Google Careers": (q) => `https://www.google.com/about/careers/applications/jobs/results/?q=${q}`,
+  "Facebook posts": (q, f) => `https://www.facebook.com/search/posts/?q=${f}`,
+  "Facebook groups": (q, f) => `https://www.facebook.com/search/groups/?q=${f}`,
+  "Facebook pages": (q, f) => `https://www.facebook.com/search/pages/?q=${f}`,
+};
+
+let D, J = [], S = [], hay = [];                 // data, jobs, site names, searchable text
+let st = {q: "", src: "all", page: 1, it: true};  // what the user asked for
+let base = [], view = [], counts = {}, relaxed = false;
+
+async function init() {
+  try {
+    const r = await fetch("data/jobs.json", {cache: "no-cache"});
+    if (!r.ok) throw new Error("data/jobs.json not found (HTTP " + r.status + ")");
+    D = await r.json();
+  } catch (e) {
+    out.innerHTML = '<div class="msg err">Could not load the job list (' + esc(e.message) + '). If you just set this up, run the "Update jobs and deploy" workflow once.</div>';
+    return;
+  }
+  J = D.jobs; S = D.sources;
+  hay = J.map(j => (j[0] + " " + j[5] + " " + S[j[2]]).toLowerCase());
+  const p = new URLSearchParams(location.hash.slice(1));
+  st.q = p.get("q") || ""; st.src = p.get("s") || "all"; st.page = +p.get("p") || 1; st.it = p.get("it") !== "0";
+  $("q").value = st.q; $("itOnly").checked = st.it;
+  recompute(true);
+}
+
+function recompute(keepPage) {
+  const cut = Date.now() - MAX_DAYS * DAY;
+  const fresh = i => !J[i][3] || J[i][3] * 6e4 >= cut;
+  const toks = st.q.toLowerCase().split(/[\s,]+/).filter(Boolean);
+  let idx = []; relaxed = false;
+  if (toks.length) {
+    for (let i = 0; i < J.length; i++) if (fresh(i) && toks.every(t => hay[i].includes(t))) idx.push(i);
+    if (idx.length < 50 && toks.length > 1) {          // few exact matches: match any word
+      relaxed = true; idx = [];
+      for (let i = 0; i < J.length; i++) if (fresh(i) && toks.some(t => hay[i].includes(t))) idx.push(i);
+    }
+  } else {
+    for (let i = 0; i < J.length; i++) if (fresh(i) && (!st.it || J[i][4])) idx.push(i);
+  }
+  base = idx; counts = {};
+  for (const i of idx) counts[J[i][2]] = (counts[J[i][2]] || 0) + 1;
+  if (!keepPage) st.page = 1;
+  applySrc();
+}
+
+function applySrc() {
+  view = st.src === "all" ? base : base.filter(i => S[J[i][2]] === st.src);
+  const pages = Math.max(1, Math.ceil(view.length / PER));
+  st.page = Math.min(Math.max(1, st.page), pages);
+  render(pages);
+  const p = new URLSearchParams();
+  if (st.q) p.set("q", st.q); if (st.src !== "all") p.set("s", st.src);
+  if (st.page > 1) p.set("p", st.page); if (!st.it) p.set("it", "0");
+  history.replaceState(null, "", p.toString() ? "#" + p : location.pathname + location.search);
+}
+
+function ago(dm) {
+  if (!dm) return ["No date", ""];
+  const d = new Date(dm * 6e4), days = Math.floor((Date.now() - d) / DAY);
+  const abs = d.toLocaleDateString(undefined, {month: "short", day: "numeric", year: "numeric"});
+  if (days <= 0) return ["Today", abs];
+  if (days === 1) return ["Yesterday", abs];
+  if (days < 30) return [days + " days ago", abs];
+  return [abs, ""];
+}
+
+function render(pages) {
+  const total = view.length, slice = view.slice((st.page - 1) * PER, st.page * PER);
+  const withJobs = Object.keys(counts).length;
+  const opts = S.map((s, i) => [s, counts[i] || 0]).filter(x => x[1]);
+  const upd = D.updated ? new Date(D.updated * 1000).toLocaleString() : "";
+  let h = `<div class="bar"><span><strong>${fmt(total)}</strong> ${!st.q && st.it ? "IT and computing " : ""}jobs from ${withJobs} sites, newest first. Page ${fmt(st.page)} of ${fmt(pages)}</span>
+    <label class="filters">Site <select id="srcSel"><option value="all">All sites (${fmt(base.length)})</option>${opts.map(([s, n]) => `<option value="${esc(s)}" ${s === st.src ? "selected" : ""}>${esc(s)} (${fmt(n)})</option>`).join("")}</select></label></div>`;
+  if (relaxed) h += '<div class="note">There are few exact matches, so this also shows jobs that match any one of your words.</div>';
+  if (!total) {
+    h += '<div class="msg">No postings matched. Try a shorter word, like "engineer" instead of "senior civil engineer", or clear the box to see all IT jobs.</div>';
+  } else {
+    h += '<ul class="jobs">' + slice.map(i => {
+      const j = J[i], [a, b] = ago(j[3]), fresh = a === "Today" || a === "Yesterday";
+      return `<li class="job"><div class="date${fresh ? " fresh" : ""}">${esc(a)}<small>${esc(b)}</small></div>
+        <div class="body"><h2><a href="${esc(j[1])}" target="_blank" rel="noopener">${esc(j[0])}</a></h2>
+        <span class="src">${esc(S[j[2]])}</span>${j[5] ? `<p>${esc(j[5])}</p>` : ""}</div></li>`;
+    }).join("") + "</ul>" + pager(pages);
+  }
+  const q = encodeURIComponent(st.q || "software"), f = encodeURIComponent((st.q || "IT jobs") + " Ethiopia");
+  h += `<div class="also"><h3>Also search these sites directly</h3>${Object.entries(EXT).map(([n, fn]) =>
+    `<a class="chip" href="${esc(fn(q, f))}" target="_blank" rel="noopener">${esc(n)}</a>`).join("")}</div>`;
+  if (D.empty?.length) h += `<details class="also"><summary>${D.empty.length} sites returned nothing</summary><p>${D.empty.map(esc).join(", ")}. These sites have no readable feed, so they need a custom scraper or a direct visit.</p></details>`;
+  h += `<p class="upd">Job list updated ${esc(upd)}. It refreshes automatically every few hours.</p>`;
+  const keep = document.activeElement?.id === "q";
+  out.innerHTML = h;
+  $("srcSel")?.addEventListener("change", e => { st.src = e.target.value; st.page = 1; applySrc(); });
+  out.querySelectorAll(".pager button[data-p]").forEach(b => b.onclick = () => go(+b.dataset.p));
+  $("jump")?.addEventListener("submit", e => { e.preventDefault(); go(+$("jumpTo").value || 1); });
+}
+
+function go(p) { st.page = p; applySrc(); window.scrollTo({top: 0, behavior: "smooth"}); }
+
+function pager(pages) {
+  if (pages < 2) return "";
+  const page = st.page, nums = [];
+  for (let i = 1; i <= pages; i++) if (i === 1 || i === pages || Math.abs(i - page) <= 2) nums.push(i);
+  let h = `<nav class="pager" aria-label="Pages"><button data-p="${page - 1}" ${page === 1 ? "disabled" : ""}>Previous</button>`, prev = 0;
+  for (const n of nums) {
+    if (n - prev > 1) h += "<span aria-hidden='true'>…</span>";
+    h += `<button data-p="${n}" ${n === page ? 'aria-current="page"' : ""}>${fmt(n)}</button>`; prev = n;
+  }
+  h += `<button data-p="${page + 1}" ${page === pages ? "disabled" : ""}>Next</button></nav>`;
+  return h + `<form id="jump" class="jump"><label>Go to page <input id="jumpTo" type="number" min="1" max="${pages}" value="${page}"></label> <button type="submit">Go</button></form>`;
+}
+
+let t;
+$("q").addEventListener("input", e => {            // search as you type
+  clearTimeout(t);
+  t = setTimeout(() => { st.q = e.target.value.trim(); st.src = "all"; recompute(false); }, 150);
+});
+$("f").addEventListener("submit", e => { e.preventDefault(); clearTimeout(t); st.q = $("q").value.trim(); st.src = "all"; recompute(false); });
+$("itOnly").addEventListener("change", e => { st.it = e.target.checked; recompute(false); });
+init();
+</script>
+</body>
+</html>
